@@ -3,11 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     tools:context="com.nextoneday.chartview.MainActivity">
 
     <com.nextoneday.chartview.kline.MyKlineChart
         android:id="@+id/chart"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_width="300dp"
+        android:layout_height="200dp" />
 
 </RelativeLayout>
