@@ -1,4 +1,4 @@
-package com.nextoneday.chartview.back2;
+package com.nextoneday.chartview.back.back2;
 
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -24,9 +24,9 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.nextoneday.chartview.R;
-import com.nextoneday.chartview.bean.ConstantTest;
-import com.nextoneday.chartview.bean.DataParse;
-import com.nextoneday.chartview.bean.KLineBean;
+import com.nextoneday.chartview.back.back2.bean.ConstantTest;
+import com.nextoneday.chartview.back.back2.bean.DataParse;
+import com.nextoneday.chartview.back.back2.bean.KLineBean;
 
 import org.json.JSONException;
 import org.json.JSONObject;

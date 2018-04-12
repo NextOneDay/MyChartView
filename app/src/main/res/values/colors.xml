@@ -51,4 +51,5 @@
     <color name="minute_jizhun">#7F9976</color>
     <color name="minute_zhoutv">#858D93</color>
     <color name="marker_bg">#1C232E</color>
+    <color name="BLACK" >#000000</color>
 </resources>

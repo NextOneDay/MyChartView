@@ -1,4 +1,4 @@
-package com.nextoneday.chartview.back2;
+package com.nextoneday.chartview.back.back2;
 
 import android.content.Intent;
 import android.os.Bundle;

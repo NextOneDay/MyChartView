@@ -1,4 +1,4 @@
-package com.nextoneday.chartview.bean;
+package com.nextoneday.chartview.back.back2.bean;
 
 
 public class MinutesBean {

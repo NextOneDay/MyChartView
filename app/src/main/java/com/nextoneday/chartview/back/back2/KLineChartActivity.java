@@ -1,4 +1,4 @@
-package com.nextoneday.chartview.back2;
+package com.nextoneday.chartview.back.back2;
 
 import android.graphics.Color;
 import android.os.Bundle;
@@ -25,9 +25,9 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.BarLineChartTouchListener;
 import com.nextoneday.chartview.R;
-import com.nextoneday.chartview.bean.ConstantTest;
-import com.nextoneday.chartview.bean.DataParse;
-import com.nextoneday.chartview.bean.KLineBean;
+import com.nextoneday.chartview.back.back2.bean.ConstantTest;
+import com.nextoneday.chartview.back.back2.bean.DataParse;
+import com.nextoneday.chartview.back.back2.bean.KLineBean;
 import com.nextoneday.chartview.listener.CoupleChartGestureListener;
 
 import org.json.JSONException;
