@@ -125,9 +125,10 @@ public class MyKlineChart extends CombinedChart {
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                Log.d(TAG,value+":::"+axis);
-//                return mMonths[(int) value % mMonths.length];
-                return null;
+//                 mMonths[(int) value % mMonths.length];
+                String date = mDatas.get((int) value).date;
+                Log.d(TAG,date+":::"+value+":::"+axis);
+                return date;
             }
         });
 
@@ -302,8 +303,8 @@ public class MyKlineChart extends CombinedChart {
 
             @Override
             public void onNothingSelected() {
-                charts[0].highlightValue(null);
-                charts[1].highlightValue(null);
+//                charts[0].highlightValue(null);
+//                charts[1].highlightValue(null);
             }
         });
 
@@ -321,9 +322,14 @@ public class MyKlineChart extends CombinedChart {
         xAxis.setDrawGridLines(false); // 网格线
         xAxis.setDrawAxisLine(false); // 轴线
 
+
+
+        xAxis.setSpaceMin(5);
+        xAxis.setSpaceMax(20);
+
         xAxis.setTextColor(getResources().getColor(R.color.minute_zhoutv));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);  // 设置位于底部
-        xAxis.setAvoidFirstLastClipping(true); // 设置首尾的值是否自动调整，避免被遮挡
+//        xAxis.setAvoidFirstLastClipping(true); // 设置首尾的值是否自动调整，避免被遮挡
 
 
         //Y轴
