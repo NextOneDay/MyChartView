@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.github.mikephil.charting.charts.Chart;
 import com.nextoneday.chartview.back.back2.bean.ConstantTest;
 import com.nextoneday.chartview.back.back2.bean.DataParse;
 import com.nextoneday.chartview.back.back2.bean.KLineBean;
@@ -46,5 +47,15 @@ public class MainActivity extends AppCompatActivity {
 //        mData.initLineDatas(kLineDatas); // 获取成交量
 
         mChart.setViewData(kLineDatas);
+
+        setMarkerView();
+        mChart.setEvent(new Chart[]{});// 设置联动的chart
+    }
+
+    /**
+     * 给view 设置markerview的数据，
+     */
+    private void setMarkerView() {
+        // TODO: 2018/4/12  给markview设置数据
     }
 }

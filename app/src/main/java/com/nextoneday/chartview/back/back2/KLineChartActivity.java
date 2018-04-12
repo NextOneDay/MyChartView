@@ -360,7 +360,7 @@ public class KLineChartActivity extends AppCompatActivity
         ArrayList<Entry>       line5Entries  = new ArrayList<>();
         ArrayList<Entry>       line10Entries = new ArrayList<>();
         ArrayList<Entry>       line30Entries = new ArrayList<>();
-        for (int i = 0, j = 0; i < mData.size(); i++, j++) {
+        for (int i = 0; i < mData.size(); i++) {
             mXVals.add(mData
                            .get(i).date + "");
 
