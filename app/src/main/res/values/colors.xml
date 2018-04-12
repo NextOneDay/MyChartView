@@ -28,8 +28,8 @@
     <!--辅助文字色，用于稍微弱些的文字表现。info_tab_unselect改名为text_grey_light-->
     <color name="text_grey_light">#A7ADBC</color>
 
-    <color name="text_red">#FC0544</color>
-    <color name="text_green">#51FFB9</color>
+    <color name="text_red">#EE2B54</color>
+    <color name="text_green">#1DD09B</color>
     <color name="text_grey">#5E5E6A</color>
     <color name="text_blue">#118CDE</color>
     <color name="text_orange">#FCAE05</color>
@@ -40,9 +40,9 @@
 
     <color name="label_etf_bg">#2C2C37</color>
 
-    <color name="ma5">#823E66</color>
-    <color name="ma10">#B99C7A</color>
-    <color name="ma20">#3C7193</color>
+    <color name="ma5">#008CC8</color>
+    <color name="ma10">#FFFFFF</color>
+    <color name="ma20">#FF00F0</color>
 
     <color name="minute_grayLine">#2D3945</color>
     <color name="minute_blue">#00D0FC</color>
@@ -52,4 +52,5 @@
     <color name="minute_zhoutv">#858D93</color>
     <color name="marker_bg">#1C232E</color>
     <color name="BLACK" >#000000</color>
+    <color name="background">#1C212A</color>
 </resources>

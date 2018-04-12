@@ -5,10 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.CombinedChart;
-import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.nextoneday.chartview.R;
@@ -38,6 +40,7 @@ import java.util.List;
 public class MyKlineChart extends CombinedChart {
 
 
+    private static final String TAG = "MyKlineChart";
     private ArrayList<KLineBean> mDatas; // 数据集合
 
     public MyKlineChart(Context context) {
@@ -83,42 +86,27 @@ public class MyKlineChart extends CombinedChart {
 
         LineDataSet maData = new LineDataSet(maline, "MA" + maNum);
 
-
-
         if (maNum == 5) {
             maData.setHighlightEnabled(true);
-            lineDataSetMa.setDrawHorizontalHighlightIndicator(false);
-            lineDataSetMa.setHighLightColor(getResources().getColor(R.color.marker_line_bg));
+            maData.setDrawHorizontalHighlightIndicator(false);
+            maData.setHighLightColor(getResources().getColor(R.color.BLACK));
         } else {/*此处必须得写*/
-            lineDataSetMa.setHighlightEnabled(false);
+            maData.setHighlightEnabled(false);
         }
-        lineDataSetMa.setDrawValues(false);
-        if (ma == 5) {
-            lineDataSetMa.setColor(getResources().getColor(R.color.ma5));
-        } else if (ma == 10) {
-            lineDataSetMa.setColor(getResources().getColor(R.color.ma10));
-        } else if (ma == 20) {
-            lineDataSetMa.setColor(getResources().getColor(R.color.ma20));
-        } else {
-            lineDataSetMa.setColor(getResources().getColor(R.color.ma30));
+        maData.setDrawValues(true); // 设置绘制值
+        if (maNum == 5) {
+            maData.setColor(getResources().getColor(R.color.ma5));
+        } else if (maNum == 10) {
+            maData.setColor(getResources().getColor(R.color.ma10));
+        } else if (maNum == 20) {
+            maData.setColor(getResources().getColor(R.color.ma20));
         }
-        lineDataSetMa.setLineWidth(1f);
-        lineDataSetMa.setDrawCircles(false);
-        lineDataSetMa.setAxisDependency(YAxis.AxisDependency.LEFT);
+        maData.setLineWidth(1f);
+        maData.setDrawCircles(false);
+        maData.setAxisDependency(YAxis.AxisDependency.LEFT);
 
-        lineDataSetMa.setHighlightEnabled(false);
-        return lineDataSetMa;
+        maData.setHighlightEnabled(false);
 
-
-
-
-        maData.setColor(Color.rgb(240, 238, 70));
-        maData.setLineWidth(2.5f);
-        maData.setCircleColor(Color.rgb(240, 238, 70));
-        maData.setCircleRadius(5f);
-        maData.setFillColor(Color.rgb(240, 238, 70));
-        maData.setMode(LineDataSet.Mode.CUBIC_BEZIER);
-        maData.setDrawValues(true);
         maData.setValueTextSize(10f);
         maData.setValueTextColor(Color.rgb(240, 238, 70));
         return maData;
@@ -131,6 +119,17 @@ public class MyKlineChart extends CombinedChart {
      */
     public void setViewData(ArrayList<KLineBean> kLineDatas) {
         this.mDatas = kLineDatas;
+
+        //设置x轴的数据
+        XAxis xAxis = getXAxis();
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                Log.d(TAG,value+":::"+axis);
+//                return mMonths[(int) value % mMonths.length];
+                return null;
+            }
+        });
 
         setCombinedData();
 
@@ -145,12 +144,8 @@ public class MyKlineChart extends CombinedChart {
         combinedData.setData(generateCandleData());
         combinedData.setData(generateLineData());
 
-        CombinedData combinedData = new CombinedData(mData.getXVals());
-        combinedData.setData(lineData);
-        combinedData.setData(candleData);
-        combinedChart.setData(combinedData);
 
-        setHandler(combinedChart);
+
 
         //设置数据后重新刷新一次
         setData(combinedData);
@@ -190,26 +185,27 @@ public class MyKlineChart extends CombinedChart {
         ArrayList<Entry> ma5 = new ArrayList<>();
         ArrayList<Entry> ma10 = new ArrayList<>();
         ArrayList<Entry> ma20 = new ArrayList<>();
+        List<ArrayList<Entry>> maline = new ArrayList<>();
 
         for (int i = 0; i < mDatas.size(); i++) {
-
 //            计算ma5 的计算为 前5天之和除以5天
 //            计算ma10 的计算为 前10天之和除以10天
 //            计算ma20 的计算为 前20天之和除以20天
             if (i >= 4) {
-                ma5.add(new Entry(getSum(i - 4, i) / 5, i));
-            } else if (i >= 9) {
-                ma10.add(new Entry(getSum(i - 9, i) / 10, i));
-            } else if (i >= 19) {
-                ma20.add(new Entry(getSum(i - 19, i) / 20, i));
+                ma5.add(new Entry(i,getSum(i - 4, i) / 5));
+            }
+            if (i >= 9) {
+                ma10.add(new Entry(i,getSum(i - 9, i) / 10));
+            }
+            if (i >= 19) {
+                ma20.add(new Entry(i,getSum(i - 19, i) / 20));
             }
 
         }
 
-        List<ArrayList<Entry>> maline = new ArrayList<>();
         maline.add(ma5);
-        maline.add(ma5);
-        maline.add(ma5);
+        maline.add(ma10);
+        maline.add(ma20);
         return maline;
     }
 
@@ -258,9 +254,8 @@ public class MyKlineChart extends CombinedChart {
         candleDataSet.setNeutralColor(getResources().getColor(R.color.text_green));//设置开盘价等于收盘价的颜色
         candleDataSet.setShadowColorSameAsCandle(true);
         candleDataSet.setHighlightLineWidth(1f);
-        candleDataSet.setHighLightColor(getResources().getColor(R.color.BLACK));
-        candleDataSet.setDrawValues(true);
-        candleDataSet.setValueTextColor(getResources().getColor(R.color.BLACK));
+        candleDataSet.setHighLightColor(getResources().getColor(R.color.common_white));
+        candleDataSet.setDrawValues(false);
         candleData.addDataSet(candleDataSet);
 
         return candleData;
@@ -323,58 +318,36 @@ public class MyKlineChart extends CombinedChart {
         XAxis xAxis = getXAxis(); //x轴
         xAxis.setDrawLabels(true);  // 绘制标签
 
-        xAxis.setDrawGridLines(true); // 网格线
-        xAxis.setDrawAxisLine(true); // 轴线
-        xAxis.setAxisLineWidth(3);
-        xAxis.setGridLineWidth(8);
+        xAxis.setDrawGridLines(false); // 网格线
+        xAxis.setDrawAxisLine(false); // 轴线
 
-        xAxis.setGridColor(R.color.colorPrimary);
-        xAxis.setAxisLineColor(R.color.colorAccent);
-        xAxis.setTextColor(R.color.text_grey);
+        xAxis.setTextColor(getResources().getColor(R.color.minute_zhoutv));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);  // 设置位于底部
         xAxis.setAvoidFirstLastClipping(true); // 设置首尾的值是否自动调整，避免被遮挡
-
-        xAxis.enableGridDashedLine(3, 2, 1); // 虚线
-        xAxis.enableAxisLineDashedLine(3, 2, 1); //实线
 
 
         //Y轴
         YAxis axisLeft = getAxisLeft();
         axisLeft.setDrawLabels(true);
         axisLeft.setDrawGridLines(true);
-        axisLeft.setDrawAxisLine(true);
-        axisLeft.setAxisLineWidth(3);
-        axisLeft.setGridLineWidth(8);
+        axisLeft.setDrawAxisLine(false);
+        axisLeft.setGridLineWidth(1);
 
-        axisLeft.setGridColor(R.color.bg_yellow);
-        axisLeft.setAxisLineColor(R.color.common_bg);
-        axisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        axisLeft.setTextColor(R.color.text_grey);
-
-        axisLeft.enableAxisLineDashedLine(3, 2, 1);
-        axisLeft.enableAxisLineDashedLine(3, 3, 1);
-
+        axisLeft.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        axisLeft.setTextColor(getResources().getColor(R.color.minute_zhoutv));
+        axisLeft.setGridColor(getResources().getColor(R.color.minute_zhoutv));
+        axisLeft.enableGridDashedLine(10, 10, 0);
         axisLeft.setLabelCount(4, false); //第一个参数是Y轴坐标的个数，第二个参数是 是否不均匀分布，true是不均匀分布
         axisLeft.setSpaceTop(10);//距离顶部留白
 
 
         //y轴右边
         YAxis axisRight = getAxisRight();
-
         axisRight.setDrawLabels(true);
-        axisRight.setDrawGridLines(true);
-        axisRight.setDrawAxisLine(true);
-        axisRight.setAxisLineWidth(3);
-        axisRight.setGridLineWidth(8);
-
-        axisRight.setGridColor(R.color.bg_yellow);
-        axisRight.setAxisLineColor(R.color.common_bg);
-        axisRight.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-        axisRight.setTextColor(R.color.text_grey);
-
-        axisRight.enableAxisLineDashedLine(3, 2, 1);
-        axisRight.enableAxisLineDashedLine(3, 3, 1);
-
+        axisRight.setDrawGridLines(false);
+        axisRight.setDrawAxisLine(false);
+        axisRight.setTextColor(getResources().getColor(R.color.common_white));
+        axisRight.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
         axisRight.setLabelCount(4, false); //第一个参数是Y轴坐标的个数，第二个参数是 是否不均匀分布，true是不均匀分布
         axisRight.setSpaceTop(10);//距离顶部留白
     }
@@ -389,8 +362,8 @@ public class MyKlineChart extends CombinedChart {
         // 允许拖动
         setDragEnabled(true);
 
-        //允许Y轴 缩放，因为不需要x轴的放大缩小
-        setScaleYEnabled(true);
+        //允许X轴 缩放，因为不需要Y轴的放大缩小
+        setScaleYEnabled(false);
 
         //双击放大缩小
         setDoubleTapToZoomEnabled(true);
@@ -406,24 +379,21 @@ public class MyKlineChart extends CombinedChart {
      */
     private void setBackgroundFrame() {
         //背景
-        setBackgroundColor(Color.BLACK);
+        setBackgroundColor(getResources().getColor(R.color.minute_black));
 
         //文字描述
-        Description description = getDescription();
-        description.setText("这是文字描述");
-        description.setTextColor(R.color.text_blue);
+       getDescription().setEnabled(false);
+//        description.setText("这是文字描述");
+//        description.setTextColor(R.color.text_blue);
 
         //没有数据时候显示
         setNoDataText("没有内容，正在加载");
+        setMaxVisibleValueCount(50);
 
         //边框
         setDrawBorders(true);
-        setBorderWidth(3);
-        setBorderColor(Color.WHITE);
-
-//        内框
-        setDrawGridBackground(true);
-
+        setBorderWidth(1);
+        setBorderColor(getResources().getColor(R.color.minute_grayLine));
         //不绘制图例
         Legend legend = getLegend();
         legend.setEnabled(false);
