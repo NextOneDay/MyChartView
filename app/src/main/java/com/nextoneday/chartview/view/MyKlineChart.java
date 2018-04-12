@@ -3,6 +3,7 @@ package com.nextoneday.chartview.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -44,6 +45,7 @@ public class MyKlineChart extends CombinedChart {
 
     private static final String TAG = "MyKlineChart";
     private ArrayList<KLineBean> mDatas; // 数据集合
+    private ArrayList<String> mXVals;
 
     public MyKlineChart(Context context) {
         super(context);
@@ -126,13 +128,9 @@ public class MyKlineChart extends CombinedChart {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
 //                 mMonths[(int) value % mMonths.length];
-                int num;
-                if (value >= mDatas.size()) {
-                    num =mDatas.size()-1;
-                } else {
-                    num = (int) value;
-                }
-                String date = mDatas.get(num).date;
+
+                float v = value >= mDatas.size() ? mDatas.size() - 1 : value;
+                String date = mDatas.get((int) v).date;
                 Log.d(TAG, date + ":::" + value + ":::" + mDatas.size());
                 return date;
             }
@@ -155,7 +153,20 @@ public class MyKlineChart extends CombinedChart {
 
         //设置数据后重新刷新一次
         setData(combinedData);
-        invalidate();
+        setHandler();
+    }
+    private void setHandler() {
+        final ViewPortHandler viewPortHandlerBar = getViewPortHandler();
+        viewPortHandlerBar.setMaximumScaleX(culcMaxscale(mXVals.size()));
+        viewPortHandlerBar.setMinimumScaleX(1f);
+        Matrix touchmatrix = viewPortHandlerBar.getMatrixTouch();
+        final float xscale = 3;
+        touchmatrix.postScale(xscale, 1f);
+    }
+    private float culcMaxscale(float count) {
+        float max = 1;
+        max = count / 127 * 5;
+        return max;
     }
 
     /**
@@ -239,9 +250,11 @@ public class MyKlineChart extends CombinedChart {
         //放置Y轴，和标签
         ArrayList<CandleEntry> candleList = new ArrayList<>();
 
+        mXVals = new ArrayList<>();
         for (int i = 0; i < mDatas.size(); i++) {
             KLineBean bean = mDatas.get(i);
             CandleEntry entry = new CandleEntry(i, bean.high, bean.low, bean.open, bean.close);
+            mXVals.add(bean.date);
             candleList.add(entry);
         }
         CandleDataSet candleDataSet = new CandleDataSet(candleList, "蜡烛图");
@@ -381,8 +394,7 @@ public class MyKlineChart extends CombinedChart {
         setDoubleTapToZoomEnabled(true);
 
         //设置最大值和最小值
-
-
+        setVisibleXRange(15,30);
         //手指滑动抛掷图表后继续减速滚动
         setDragDecelerationEnabled(true);
         //减速摩擦系数
