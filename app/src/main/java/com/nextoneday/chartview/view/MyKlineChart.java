@@ -21,8 +21,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.nextoneday.chartview.R;
 import com.nextoneday.chartview.back.back2.bean.KLineBean;
 import com.nextoneday.chartview.listener.CoupleChartGestureListener;
@@ -104,11 +106,9 @@ public class MyKlineChart extends CombinedChart {
         maData.setLineWidth(1f);
         maData.setDrawCircles(false);
         maData.setAxisDependency(YAxis.AxisDependency.LEFT);
-
+        maData.setDrawValues(false);
         maData.setHighlightEnabled(false);
 
-        maData.setValueTextSize(10f);
-        maData.setValueTextColor(Color.rgb(240, 238, 70));
         return maData;
     }
 
@@ -126,8 +126,14 @@ public class MyKlineChart extends CombinedChart {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
 //                 mMonths[(int) value % mMonths.length];
-                String date = mDatas.get((int) value).date;
-                Log.d(TAG,date+":::"+value+":::"+axis);
+                int num;
+                if (value >= mDatas.size()) {
+                    num =mDatas.size()-1;
+                } else {
+                    num = (int) value;
+                }
+                String date = mDatas.get(num).date;
+                Log.d(TAG, date + ":::" + value + ":::" + mDatas.size());
                 return date;
             }
         });
@@ -142,10 +148,9 @@ public class MyKlineChart extends CombinedChart {
     private void setCombinedData() {
 
         CombinedData combinedData = new CombinedData();
+
         combinedData.setData(generateCandleData());
         combinedData.setData(generateLineData());
-
-
 
 
         //设置数据后重新刷新一次
@@ -193,13 +198,13 @@ public class MyKlineChart extends CombinedChart {
 //            计算ma10 的计算为 前10天之和除以10天
 //            计算ma20 的计算为 前20天之和除以20天
             if (i >= 4) {
-                ma5.add(new Entry(i,getSum(i - 4, i) / 5));
+                ma5.add(new Entry(i, getSum(i - 4, i) / 5));
             }
             if (i >= 9) {
-                ma10.add(new Entry(i,getSum(i - 9, i) / 10));
+                ma10.add(new Entry(i, getSum(i - 9, i) / 10));
             }
             if (i >= 19) {
-                ma20.add(new Entry(i,getSum(i - 19, i) / 20));
+                ma20.add(new Entry(i, getSum(i - 19, i) / 20));
             }
 
         }
@@ -243,7 +248,6 @@ public class MyKlineChart extends CombinedChart {
 
         // 在这里设置蜡烛图的一些属性颜色等
 
-        candleDataSet.setDrawHorizontalHighlightIndicator(true);
         candleDataSet.setHighlightEnabled(true);
         candleDataSet.setAxisDependency(YAxis.AxisDependency.LEFT); //相对于那个轴
         candleDataSet.setShadowWidth(1f);
@@ -255,8 +259,10 @@ public class MyKlineChart extends CombinedChart {
         candleDataSet.setNeutralColor(getResources().getColor(R.color.text_green));//设置开盘价等于收盘价的颜色
         candleDataSet.setShadowColorSameAsCandle(true);
         candleDataSet.setHighlightLineWidth(1f);
+        candleDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
         candleDataSet.setHighLightColor(getResources().getColor(R.color.common_white));
-        candleDataSet.setDrawValues(false);
+        candleDataSet.setDrawValues(true);
+        candleDataSet.setValueTextColor(getResources().getColor(R.color.common_white));
         candleData.addDataSet(candleDataSet);
 
         return candleData;
@@ -323,7 +329,8 @@ public class MyKlineChart extends CombinedChart {
         xAxis.setDrawAxisLine(false); // 轴线
 
 
-
+        //用来限制X轴数量
+        xAxis.setLabelCount(5);
         xAxis.setSpaceMin(5);
         xAxis.setSpaceMax(20);
 
@@ -370,9 +377,12 @@ public class MyKlineChart extends CombinedChart {
 
         //允许X轴 缩放，因为不需要Y轴的放大缩小
         setScaleYEnabled(false);
-
         //双击放大缩小
         setDoubleTapToZoomEnabled(true);
+
+        //设置最大值和最小值
+
+
         //手指滑动抛掷图表后继续减速滚动
         setDragDecelerationEnabled(true);
         //减速摩擦系数
@@ -388,7 +398,7 @@ public class MyKlineChart extends CombinedChart {
         setBackgroundColor(getResources().getColor(R.color.minute_black));
 
         //文字描述
-       getDescription().setEnabled(false);
+        getDescription().setEnabled(false);
 //        description.setText("这是文字描述");
 //        description.setTextColor(R.color.text_blue);
 
@@ -400,6 +410,10 @@ public class MyKlineChart extends CombinedChart {
         setDrawBorders(true);
         setBorderWidth(1);
         setBorderColor(getResources().getColor(R.color.minute_grayLine));
+
+        setMinOffset(0f);
+        setExtraOffsets(0f, 0f, 0f, 3f);
+
         //不绘制图例
         Legend legend = getLegend();
         legend.setEnabled(false);
