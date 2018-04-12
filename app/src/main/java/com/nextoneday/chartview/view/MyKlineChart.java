@@ -1,4 +1,4 @@
-package com.nextoneday.chartview.kline;
+package com.nextoneday.chartview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;

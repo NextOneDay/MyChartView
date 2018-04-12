@@ -8,7 +8,7 @@ import com.github.mikephil.charting.charts.Chart;
 import com.nextoneday.chartview.back.back2.bean.ConstantTest;
 import com.nextoneday.chartview.back.back2.bean.DataParse;
 import com.nextoneday.chartview.back.back2.bean.KLineBean;
-import com.nextoneday.chartview.kline.MyKlineChart;
+import com.nextoneday.chartview.view.MyKlineChart;
 
 import org.json.JSONException;
 import org.json.JSONObject;
