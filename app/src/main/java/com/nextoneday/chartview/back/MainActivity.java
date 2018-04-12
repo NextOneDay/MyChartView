@@ -23,7 +23,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.test.androidchart.R;
+import com.nextoneday.chartview.R;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
