@@ -394,7 +394,7 @@ public class MyKlineChart extends CombinedChart {
         setDoubleTapToZoomEnabled(true);
 
         //设置最大值和最小值
-        setVisibleXRange(15,30);
+        setAutoScaleMinMaxEnabled(true);
         //手指滑动抛掷图表后继续减速滚动
         setDragDecelerationEnabled(true);
         //减速摩擦系数
