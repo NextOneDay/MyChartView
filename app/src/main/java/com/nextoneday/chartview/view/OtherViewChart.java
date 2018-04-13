@@ -2,6 +2,7 @@ package com.nextoneday.chartview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.util.AttributeSet;
 
 import com.github.mikephil.charting.charts.Chart;
@@ -9,9 +10,16 @@ import com.github.mikephil.charting.charts.CombinedChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.CombinedData;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.nextoneday.chartview.R;
 import com.nextoneday.chartview.back.back2.bean.KLineBean;
 import com.nextoneday.chartview.listener.CoupleChartGestureListener;
@@ -24,6 +32,9 @@ import java.util.ArrayList;
 
 public class OtherViewChart extends CombinedChart {
     private ArrayList<KLineBean> mDatas;
+    private ArrayList<String> mXVals;
+    private ArrayList<Entry> mDifline;
+    private ArrayList<Entry> mDealine;
 
     public OtherViewChart(Context context) {
         super(context);
@@ -157,10 +168,10 @@ public class OtherViewChart extends CombinedChart {
 
     /**
      * 这里需要gezhong各种指标，的显示，计算
-     *
+     * <p>
      * 默认显示的是macd线
-     * @param kLineDatas
      *
+     * @param kLineDatas
      */
     public void setViewData(ArrayList<KLineBean> kLineDatas) {
 
@@ -174,11 +185,167 @@ public class OtherViewChart extends CombinedChart {
      */
     private void setCombinedData() {
 
+        CombinedData combinedData = new CombinedData();
+        combinedData.setData(generateBarData());
+        combinedData.setData(generateLineData());
+
+        setData(combinedData);
+        setHandler();
+    }
+
+    /**
+     * 设置boll 线
+     */
+    private void setBollLineData() {
+
+        CombinedData combinedData = new CombinedData();
+        combinedData.setData(generateBarData());
+        combinedData.setData(generateLineData());
+        setData(combinedData);
+        setHandler();
+
+    }
+
+    private void setKDJLineData() {
+
+
+    }
+
+    private void setRSILineData() {
+
+    }
+
+    private LineData generateLineData() {
+        LineData lineData = new LineData();
+
+        lineData.addDataSet(lineDataSet(0, mDealine));
+        lineData.addDataSet(lineDataSet(1, mDifline));
+
+
+        return lineData;
+    }
+
+    private LineDataSet lineDataSet(int type, ArrayList<Entry> line) {
+
+
+        LineDataSet lineDataSet = new LineDataSet(line, "macd" + type);
+        lineDataSet.setHighlightEnabled(false);
+        lineDataSet.setDrawValues(false);
+
+        //DEA
+        if (type == 0) {
+            lineDataSet.setColor(getResources().getColor(R.color.ma5));
+        } else {
+            lineDataSet.setColor(getResources().getColor(R.color.ma10));
+        }
+
+        lineDataSet.setLineWidth(1f);
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        return lineDataSet;
+    }
+
+    /**
+     * MACD线  包含dea  dif  macd
+     * 其中基础计算时ema12 ema26 这个没有显示，但是是其他计算的基础
+     *
+     * @return
+     */
+    private BarData generateBarData() {
+
+        BarData barData = new BarData();
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        mDealine = new ArrayList<>();
+        mDifline = new ArrayList<>();
+        mXVals = new ArrayList<>();
+        // 添加指标
+        // 1、计算移动平均值（EMA）  
+        // 12日EMA的算式为： 
+        // EMA（12）=前一日EMA（12）×11/13＋今日收盘价×2/13  
+        // 26日EMA的算式为： 
+        // EMA（26）=前一日EMA（26）×25/27＋今日收盘价×2/27  
+        // 2、计算离差值（DIF）  
+        // DIF=今日EMA（12）－今日EMA（26）  3、计算DIF的9日EMA （DEA） 
+        // 3、计算DIF的9日EMA （DEA） 
+        // 根据离差值计算其9日的EMA，即离差平均值，是所求的MACD值。为了不与指标原名相混淆，此值又名DEA或DEM。  
+        // 今日DEA（MACD）=前一日DEA×8/10＋今日DIF×2/10  
+        // 4、计算MACD
+        // MACD=BAR=2×(DIF－DEA)
+
+        ArrayList<Float> DEALine = new ArrayList<>();
+        ArrayList<Float> DIFLine = new ArrayList<>();
+        ArrayList<Float> MACDLine = new ArrayList<>();
+
+        float ema12 = 0.0f;
+        float ema26 = 0.0f;
+        float dif, macd, dea = 0.0f;
+        float close;
+        if (mDatas != null || mDatas.size() > 0) {
+            for (int i = 0; i < mDatas.size(); i++) {
+                KLineBean bean = mDatas.get(i);
+                mXVals.add(bean.date);
+                close = bean.close;
+                if (i == 0) {
+                    ema12 = close;
+                    ema26 = close;
+                } else {
+                    ema12 = ema12 * 11 / 13 + close * 2 / 13;
+                    ema26 = ema26 * 25 / 27 + close * 2 / 27;
+                }
+                dif = ema12 - ema26;
+                dea = dea * 8 / 10 + dif * 2 / 10;
+                macd = 2 * (dif - dea);
+
+                DEALine.add(dea);
+                DIFLine.add(dif);
+                MACDLine.add(macd);
+
+                BarEntry entry = new BarEntry(i, macd);
+                entries.add(entry);
+                Entry deaentry = new Entry(i, dea);
+                mDealine.add(deaentry);
+                Entry difentry = new Entry(i, dif);
+                mDifline.add(difentry);
+
+            }
+        }
+
+        BarDataSet barDataSet = new BarDataSet(entries, "MACD");
+        //对bar设置属性，颜色等值
+
+        barDataSet.setHighlightEnabled(true);
+        barDataSet.setHighLightAlpha(255);
+        barDataSet.setHighLightColor(getResources().getColor(R.color.common_white));
+        barDataSet.setDrawValues(false);
+        barDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        barDataSet.setColors(getResources().getColor(R.color.text_red));
+
+        barData.addDataSet(barDataSet);
+        return barData;
+    }
+
+
+    private void setHandler() {
+
+        final ViewPortHandler viewPortHandlerBar = getViewPortHandler();
+        viewPortHandlerBar.setMaximumScaleX(culcMaxscale(mXVals.size()));
+        viewPortHandlerBar.setMinimumScaleX(1f);
+        Matrix touchmatrix = viewPortHandlerBar.getMatrixTouch();
+        final float xscale = 3;
+        touchmatrix.postScale(xscale, 1f);
+    }
+
+    private float culcMaxscale(float count) {
+        float max = 1;
+        max = count / 127 * 5;
+        return max;
     }
 
     public void setEvent(Chart[] charts) {
 
-        setOnChartGestureListener(new CoupleChartGestureListener(this,charts));
+        setOnChartGestureListener(new CoupleChartGestureListener(this, charts));
 
         setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
@@ -196,6 +363,7 @@ public class OtherViewChart extends CombinedChart {
 
     /**
      * 重写markerview 的显示
+     *
      * @param canvas
      */
     @Override
