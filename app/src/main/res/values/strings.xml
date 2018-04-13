@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MyChartView</string>
+    <string name="wan_unit">万手</string>
+    <string name="yi_unit">亿手</string>
 </resources>

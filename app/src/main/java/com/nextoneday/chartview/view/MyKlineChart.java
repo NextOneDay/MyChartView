@@ -2,7 +2,6 @@ package com.nextoneday.chartview.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.util.AttributeSet;
@@ -22,7 +21,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
@@ -107,9 +105,8 @@ public class MyKlineChart extends CombinedChart {
         }
         maData.setLineWidth(1f);
         maData.setDrawCircles(false);
+        maData.setHighlightEnabled(false); // 线不需要设置高亮线
         maData.setAxisDependency(YAxis.AxisDependency.LEFT);
-        maData.setDrawValues(false);
-        maData.setHighlightEnabled(false);
 
         return maData;
     }
@@ -346,11 +343,13 @@ public class MyKlineChart extends CombinedChart {
         xAxis.setLabelCount(5);
         xAxis.setSpaceMin(5);
         xAxis.setSpaceMax(20);
+//        xAxis.setAxisMinimum(0);//设置X轴坐标最小为多少
+//        xAxis.setAxisMaximum(5);
 
         xAxis.setTextColor(getResources().getColor(R.color.minute_zhoutv));
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);  // 设置位于底部
 //        xAxis.setAvoidFirstLastClipping(true); // 设置首尾的值是否自动调整，避免被遮挡
-
+        xAxis.setLabelCount(5,false);
 
         //Y轴
         YAxis axisLeft = getAxisLeft();

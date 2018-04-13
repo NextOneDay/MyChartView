@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
+
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:background="@color/minute_black"
     tools:context="com.nextoneday.chartview.MainActivity">
 
     <com.nextoneday.chartview.view.MyKlineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="200dp" />
 
-</RelativeLayout>
+    <com.nextoneday.chartview.view.BandsLineChart
+        android:id="@+id/volume"
+
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"/>
+
+    <com.nextoneday.chartview.view.OtherViewChart
+        android:id="@+id/other"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"/>
+
+
+
+
+</LinearLayout>
