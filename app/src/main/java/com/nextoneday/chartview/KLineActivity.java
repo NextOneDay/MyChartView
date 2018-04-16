@@ -28,7 +28,7 @@ public class KLineActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_kline_view);
         mChart = findViewById(R.id.chart);
         mVolume = findViewById(R.id.volume);
         mOther = findViewById(R.id.other);

@@ -19,7 +19,6 @@ import com.nextoneday.chartview.R;
 import com.nextoneday.chartview.back.back2.bean.MinutesBean;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/4/16.
@@ -179,12 +178,9 @@ public class MinutesBarChart extends BarChart {
         barDataSet.setDrawValues(false);
         barDataSet.setHighlightEnabled(true);
         barDataSet.setColor(Color.RED);
-        List<Integer> list=new ArrayList<>();
-        list.add(Color.RED);
-        list.add(Color.GREEN);
-        barDataSet.setColors(list);
 
 
+        barData.addDataSet(barDataSet);
         setData(barData);
         invalidate();
 
