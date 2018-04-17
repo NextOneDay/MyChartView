@@ -1662,9 +1662,7 @@ public abstract class Chart<T extends ChartData<? extends IDataSet<? extends Ent
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int size = (int) Utils.convertDpToPixel(50f);
         setMeasuredDimension(
-                Math.max(getSuggestedMinimumWidth(),
-                        resolveSize(size,
-                                widthMeasureSpec)),
+                Math.max(getSuggestedMinimumWidth(), resolveSize(size, widthMeasureSpec)),
                 Math.max(getSuggestedMinimumHeight(),
                         resolveSize(size,
                                 heightMeasureSpec)));

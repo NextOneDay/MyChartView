@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 public class MinutesBarChart extends BarChart {
     private ArrayList<MinutesBean> mDatas;
+    private ArrayList<String> mXalix;
 
     public MinutesBarChart(Context context) {
         super(context);
@@ -155,12 +156,15 @@ public class MinutesBarChart extends BarChart {
     public void setViewData(ArrayList<MinutesBean> minData) {
         this.mDatas= minData;
         setBarData();
+        XAxis xAxis = getXAxis();
+
 
     }
 
     private void setBarData() {
         BarData barData = new BarData();
         ArrayList<BarEntry> entries = new ArrayList<>();
+        mXalix = new ArrayList<>();
         for (int i = 0; i < mDatas.size(); i++) {
             MinutesBean bean = mDatas.get(i);
             if (bean == null) {
@@ -168,6 +172,7 @@ public class MinutesBarChart extends BarChart {
                 continue;
             }
 
+            mXalix.add(bean.time);
             BarEntry barEntry = new BarEntry(i, bean.cjnum);
             entries.add(barEntry);
         }
