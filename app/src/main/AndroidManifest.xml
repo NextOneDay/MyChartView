@@ -11,7 +11,7 @@
         android:theme="@style/AppTheme">
 
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,11 +19,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".KLineActivity">
+        <activity android:name=".activity.KLineActivity">
 
         </activity>
 
-        <activity android:name=".MinutesActivity">
+        <activity android:name=".activity.MinutesActivity">
 
 
         </activity>

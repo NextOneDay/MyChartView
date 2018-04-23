@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("qqq", "最高" + candleEntry.getHigh() + " 最低" + candleEntry.getLow() +
                         " 开盘" + candleEntry.getOpen() + " 收盘" + candleEntry.getClose() +
                         " 涨跌幅" + changePercentage);
+
             }
 
             @Override

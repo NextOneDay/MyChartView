@@ -4,8 +4,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
@@ -13,6 +15,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.nextoneday.chartview.R;
@@ -25,6 +28,7 @@ import java.util.ArrayList;
  */
 
 public class MinutesLineChart extends LineChart {
+    private static final String TGA = "MinutesLineChart";
     private ArrayList<MinutesBean> mDatas;
 
     public MinutesLineChart(Context context) {
@@ -125,6 +129,33 @@ public class MinutesLineChart extends LineChart {
 //        xAxis.setAvoidFirstLastClipping(true); // 设置首尾的值是否自动调整，避免被遮挡
         xAxis.setLabelCount(5, false);
 
+        xAxis.setValueFormatter(new IAxisValueFormatter() {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis) {
+                Log.d(TGA, "value=" + value);
+                String result = "0";
+                switch ((int) value) {
+                    case 0:
+                        result = "09:30";
+                        break;
+                    case 20:
+                        result = "10:30";
+                        break;
+                    case 40:
+                        result = "11:30/13:00";
+                        break;
+                    case 60:
+                        result = "14:00";
+                        break;
+                    case 80:
+                        result = "15:00";
+                        break;
+                }
+                return result;
+            }
+        });
+
+
         //Y轴
         YAxis axisLeft = getAxisLeft();
         axisLeft.setDrawLabels(true);
@@ -160,6 +191,7 @@ public class MinutesLineChart extends LineChart {
             return;
         }
 
+
         setLineData();
 
 
@@ -190,7 +222,7 @@ public class MinutesLineChart extends LineChart {
         for (int i = 0; i < mDatas.size(); i++) {
             MinutesBean bean = mDatas.get(i);
 
-            if (bean== null) {
+            if (bean == null) {
                 cjentries.add(new Entry(Float.NaN, i));
                 jjentries.add(new Entry(Float.NaN, i));
                 continue;

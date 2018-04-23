@@ -1,10 +1,11 @@
-package com.nextoneday.chartview;
+package com.nextoneday.chartview.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.Chart;
+import com.nextoneday.chartview.R;
 import com.nextoneday.chartview.back.back2.bean.ConstantTest;
 import com.nextoneday.chartview.back.back2.bean.DataParse;
 import com.nextoneday.chartview.back.back2.bean.KLineBean;
